@@ -3,39 +3,55 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Loader } from 'lucide-react'
 import Link from 'next/link'
+
+const roleOptions = [
+  {
+    id: 'filmmaker',
+    title: 'Filmmaker',
+    description: 'Share your films and earn from distributors and buyers',
+    icon: '🎬',
+    color: 'from-red-600 to-red-500',
+  },
+  {
+    id: 'distributor',
+    title: 'Distributor',
+    description: 'Find and license films for your platforms',
+    icon: '📽️',
+    color: 'from-orange-600 to-orange-500',
+  },
+  {
+    id: 'buyer',
+    title: 'Film Enthusiast',
+    description: 'Buy and track your favorite films',
+    icon: '🎥',
+    color: 'from-amber-600 to-amber-500',
+  },
+]
 
 export default function ProtectedPage() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [showRoleSelection, setShowRoleSelection] = useState(false)
-  const [settingRole, setSettingRole] = useState(false)
+  const [settingRole, setSettingRole] = useState<string | null>(null)
 
   useEffect(() => {
     const redirectToAppropriateRoute = async () => {
       const supabase = createClient()
       
       try {
-        // Get current user
         const { data: { user }, error: userError } = await supabase.auth.getUser()
         
         if (userError || !user) {
-          // No user, redirect to login
           router.push('/auth/login')
           return
         }
 
         setUser(user)
-
-        // Check user type from metadata
         const userType = user.user_metadata?.user_type
 
-        console.log('[v0] User authenticated:', user.email, 'Type:', userType)
-
-        // Redirect based on user type
         if (userType === 'filmmaker') {
           router.push('/filmmaker-dashboard')
         } else if (userType === 'distributor') {
@@ -43,7 +59,6 @@ export default function ProtectedPage() {
         } else if (userType === 'buyer') {
           router.push('/dashboard')
         } else {
-          // No user type set yet, show role selection UI
           setShowRoleSelection(true)
         }
       } catch (error) {
@@ -58,11 +73,10 @@ export default function ProtectedPage() {
   }, [router])
 
   const handleRoleSelection = async (role: 'filmmaker' | 'distributor' | 'buyer') => {
-    setSettingRole(true)
+    setSettingRole(role)
     try {
       const supabase = createClient()
 
-      // Update user metadata with the selected role
       const { error } = await supabase.auth.updateUser({
         data: { user_type: role }
       })
@@ -70,13 +84,10 @@ export default function ProtectedPage() {
       if (error) {
         console.error('[v0] Error updating user metadata:', error)
         alert('Error setting role. Please try again.')
-        setSettingRole(false)
+        setSettingRole(null)
         return
       }
 
-      console.log('[v0] User role set to:', role)
-
-      // Redirect to appropriate dashboard
       if (role === 'filmmaker') {
         router.push('/filmmaker-dashboard')
       } else if (role === 'distributor') {
@@ -87,7 +98,7 @@ export default function ProtectedPage() {
     } catch (error) {
       console.error('[v0] Error:', error)
       alert('Error setting role. Please try again.')
-      setSettingRole(false)
+      setSettingRole(null)
     }
   }
 
@@ -95,8 +106,9 @@ export default function ProtectedPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center">
-          <p className="text-foreground mb-2">Loading...</p>
-          <p className="text-sm text-muted-foreground">Please wait.</p>
+          <Loader className="h-8 w-8 animate-spin mx-auto text-primary mb-4" />
+          <p className="text-foreground mb-2 font-medium">Loading your profile...</p>
+          <p className="text-sm text-muted-foreground">Just a moment.</p>
         </div>
       </div>
     )
@@ -104,55 +116,98 @@ export default function ProtectedPage() {
 
   if (showRoleSelection) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background p-6">
-        <Card className="w-full max-w-md bg-card border-border p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-foreground mb-2">Welcome to Quiflix</h1>
-            <p className="text-muted-foreground">
-              {user?.email}
+      <div className="relative min-h-screen w-full overflow-hidden bg-background">
+        {/* Gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-card opacity-40" />
+        
+        {/* Content */}
+        <div className="relative flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="mb-12 text-center max-w-2xl">
+            <div className="inline-block mb-6">
+              <span className="text-5xl">🎬</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4 tracking-tight">
+              Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Quiflix</span>
+            </h1>
+            <p className="text-lg text-muted-foreground mb-2">
+              The premium platform for filmmakers and film lovers
             </p>
-            <p className="text-sm text-muted-foreground mt-4">
-              Choose your role to continue
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <Button
-              onClick={() => handleRoleSelection('filmmaker')}
-              disabled={settingRole}
-              className="w-full gap-2 py-6 text-base bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              {settingRole ? 'Setting up...' : 'Continue as Filmmaker'}
-            </Button>
-
-            <Button
-              onClick={() => handleRoleSelection('distributor')}
-              disabled={settingRole}
-              variant="outline"
-              className="w-full gap-2 py-6 text-base bg-transparent border-border hover:bg-card"
-            >
-              {settingRole ? 'Setting up...' : 'Continue as Distributor'}
-            </Button>
-
-            <Button
-              onClick={() => handleRoleSelection('buyer')}
-              disabled={settingRole}
-              variant="outline"
-              className="w-full gap-2 py-6 text-base bg-transparent border-border hover:bg-card"
-            >
-              {settingRole ? 'Setting up...' : 'Continue as Buyer'}
-            </Button>
-          </div>
-
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            <p>
-              Want to change roles later?{' '}
-              <Link href="/" className="text-primary hover:underline">
-                Go to home
-              </Link>
+            <p className="text-sm text-muted-foreground">
+              Signed in as <span className="font-semibold text-foreground">{user?.email}</span>
             </p>
           </div>
-        </Card>
+
+          {/* Role Selection Grid */}
+          <div className="w-full max-w-5xl">
+            <h2 className="text-xl font-semibold text-foreground mb-8 text-center">
+              What describes you best?
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {roleOptions.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => handleRoleSelection(option.id as 'filmmaker' | 'distributor' | 'buyer')}
+                  disabled={settingRole !== null}
+                  className="group relative"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
+                  
+                  <div className="relative h-full bg-card border border-border rounded-2xl p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-xl cursor-pointer overflow-hidden">
+                    {/* Background gradient accent */}
+                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${option.color} opacity-0 group-hover:opacity-10 rounded-full blur-2xl transition-opacity duration-300`} />
+                    
+                    <div className="relative">
+                      <div className="text-5xl mb-4">{option.icon}</div>
+                      
+                      <h3 className="text-xl font-bold text-foreground mb-2">
+                        {option.title}
+                      </h3>
+                      
+                      <p className="text-sm text-muted-foreground mb-6 min-h-10 text-left">
+                        {option.description}
+                      </p>
+
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-muted-foreground">
+                          {settingRole === option.id ? 'Setting up...' : 'Get started'}
+                        </span>
+                        <span className="group-hover:translate-x-1 transition-transform duration-300">
+                          {settingRole === option.id ? (
+                            <Loader className="h-4 w-4 animate-spin text-primary" />
+                          ) : (
+                            <span className="text-primary">→</span>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Loading state overlay */}
+                    {settingRole === option.id && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-shimmer" />
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Help Section */}
+            <div className="text-center space-y-4">
+              <div className="flex flex-col items-center justify-center gap-1">
+                <p className="text-sm text-muted-foreground">
+                  Not sure? You can change your role anytime
+                </p>
+                <Link href="/" className="text-xs text-primary hover:underline font-medium">
+                  Learn more about Quiflix
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer accent */}
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none blur-3xl -z-10" />
+        </div>
       </div>
     )
   }
@@ -160,8 +215,9 @@ export default function ProtectedPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="text-center">
-        <p className="text-foreground mb-2">Redirecting you to your dashboard...</p>
-        <p className="text-sm text-muted-foreground">Please wait.</p>
+        <Loader className="h-8 w-8 animate-spin mx-auto text-primary mb-4" />
+        <p className="text-foreground mb-2 font-medium">Redirecting...</p>
+        <p className="text-sm text-muted-foreground">Taking you to your dashboard.</p>
       </div>
     </div>
   )
