@@ -3,8 +3,14 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Loader } from 'lucide-react'
 import Link from 'next/link'
+
+// Spinner component
+function Spinner() {
+  return (
+    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+  )
+}
 
 const roleOptions = [
   {
@@ -106,7 +112,9 @@ export default function ProtectedPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center">
-          <Loader className="h-8 w-8 animate-spin mx-auto text-primary mb-4" />
+          <div className="mx-auto mb-4 text-primary">
+            <Spinner />
+          </div>
           <p className="text-foreground mb-2 font-medium">Loading your profile...</p>
           <p className="text-sm text-muted-foreground">Just a moment.</p>
         </div>
@@ -175,7 +183,7 @@ export default function ProtectedPage() {
                         </span>
                         <span className="group-hover:translate-x-1 transition-transform duration-300">
                           {settingRole === option.id ? (
-                            <Loader className="h-4 w-4 animate-spin text-primary" />
+                            <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent text-primary" />
                           ) : (
                             <span className="text-primary">→</span>
                           )}
@@ -215,7 +223,9 @@ export default function ProtectedPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="text-center">
-        <Loader className="h-8 w-8 animate-spin mx-auto text-primary mb-4" />
+        <div className="mx-auto mb-4 text-primary">
+          <Spinner />
+        </div>
         <p className="text-foreground mb-2 font-medium">Redirecting...</p>
         <p className="text-sm text-muted-foreground">Taking you to your dashboard.</p>
       </div>
