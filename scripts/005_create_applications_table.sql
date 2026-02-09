@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS applications (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   
   -- Indexes for performance
-  CONSTRAINT unique_user_type_pending UNIQUE (user_id, application_type, status) WHERE status = 'pending'
+  UNIQUE (user_id, application_type)
 );
 
 -- Create index for faster queries
