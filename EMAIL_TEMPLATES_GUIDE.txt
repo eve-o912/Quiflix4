@@ -1,0 +1,79 @@
+SUPABASE EMAIL TEMPLATES CONFIGURATION GUIDE
+============================================
+
+PROBLEM:
+When users click email confirmation links, they're redirected to localhost:3000 
+instead of your deployed app at https://v0-quiflix4.vercel.app/
+
+SOLUTION:
+Configure Supabase email templates to use the correct redirect URLs.
+
+STEP-BY-STEP SETUP:
+==================
+
+1. Go to Supabase Dashboard
+   - Login at https://app.supabase.com
+   - Select your Quiflix4 project
+
+2. Navigate to Email Templates
+   - Go to: Authentication > Email Templates
+   - You'll see 4 templates to configure:
+     * Confirm signup
+     * Invite user
+     * Magic Link
+     * Change email address
+     * Reset Password
+
+3. Configure Each Template
+   
+   For CONFIRM SIGNUP template:
+   - Click "Edit"
+   - Find the line with the link (usually contains "{{ .ConfirmationURL }}")
+   - The URL should be in the template or you need to ensure the "Redirect URL" is set
+   - Make sure the redirect URL is set to: https://v0-quiflix4.vercel.app/auth/confirm
+   - Save changes
+
+   For RESET PASSWORD template:
+   - Click "Edit"
+   - Set redirect URL to: https://v0-quiflix4.vercel.app/auth/reset-password
+   - Save changes
+
+4. Alternative: Configure Redirect URLs in Auth Settings
+   - Go to: Authentication > URL Configuration
+   - Under "Redirect URLs" section, add:
+     * https://v0-quiflix4.vercel.app/auth/confirm
+     * https://v0-quiflix4.vercel.app/auth/reset-password
+     * https://v0-quiflix4.vercel.app/protected
+   
+5. Test Email Confirmation
+   - Sign up with a new email at /auth/sign-up
+   - Check your email for confirmation link
+   - Click the link
+   - Should now redirect to https://v0-quiflix4.vercel.app/auth/confirm
+   - Then auto-redirect to role selection page
+
+IMPORTANT NOTES:
+===============
+✓ The code is already dynamic using window.location.origin
+✓ Works on localhost, staging, and production automatically
+✓ Email templates need to be configured once in Supabase
+✓ When you change domains:
+  - Update the redirect URLs in Supabase dashboard
+  - No code changes needed!
+
+CHANGING DOMAINS LATER:
+=====================
+1. Get your new domain (e.g., www.quiflix.com)
+2. Go to Supabase > Authentication > URL Configuration
+3. Update redirect URLs to your new domain
+4. Done! No code changes needed.
+
+CURRENT SETUP:
+==============
+✓ Sign-up redirect: https://v0-quiflix4.vercel.app/auth/confirm
+✓ Forgot password: https://v0-quiflix4.vercel.app/auth/forgot-password
+✓ Reset password: https://v0-quiflix4.vercel.app/auth/reset-password
+✓ Protected route: https://v0-quiflix4.vercel.app/protected
+✓ Role selection: https://v0-quiflix4.vercel.app/protected (auto-routes based on role)
+
+All URLs use window.location.origin, so they automatically adapt to any domain!
