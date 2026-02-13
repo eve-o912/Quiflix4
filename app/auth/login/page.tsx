@@ -32,9 +32,6 @@ export default function Page() {
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm`,
-        },
       })
       if (error) throw error
       router.push('/protected')

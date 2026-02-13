@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 export default function ConfirmPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -14,21 +15,28 @@ export default function ConfirmPage() {
       try {
         const supabase = createClient()
 
-        // Supabase automatically handles the confirmation with the token from URL
-        // We just need to check if the user is authenticated
+        // Check if user has a session (email confirmed)
         const { data: { user }, error: userError } = await supabase.auth.getUser()
 
         if (userError) {
           console.error('[v0] Email confirmation error:', userError.message)
-          setError(userError.message || 'Failed to confirm email')
+          setError('Invalid confirmation link or link has expired. Please try signing up again.')
           setLoading(false)
           return
         }
 
-        if (user) {
+        if (user && user.email_confirmed_at) {
           console.log('[v0] Email confirmed successfully for:', user.email)
-          // Redirect to protected route which handles role-based routing
-          router.push('/protected')
+          // Small delay to ensure session is established
+          setTimeout(() => {
+            router.push('/protected')
+          }, 500)
+        } else if (user) {
+          console.log('[v0] User authenticated but email not confirmed yet')
+          // User exists but email not confirmed, redirect to protected
+          setTimeout(() => {
+            router.push('/protected')
+          }, 500)
         } else {
           setError('No user found. Please sign up again.')
           setLoading(false)
@@ -41,7 +49,7 @@ export default function ConfirmPage() {
     }
 
     handleEmailConfirmation()
-  }, [router])
+  }, [router, searchParams])
 
   if (error) {
     return (

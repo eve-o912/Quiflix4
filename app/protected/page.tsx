@@ -42,6 +42,7 @@ export default function ProtectedPage() {
   const [loading, setLoading] = useState(true)
   const [showRoleSelection, setShowRoleSelection] = useState(false)
   const [settingRole, setSettingRole] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const redirectToAppropriateRoute = async () => {
@@ -50,13 +51,23 @@ export default function ProtectedPage() {
       try {
         const { data: { user }, error: userError } = await supabase.auth.getUser()
         
-        if (userError || !user) {
+        if (userError) {
+          console.error('[v0] Auth error:', userError.message)
+          setError('Authentication failed. Please login again.')
+          setTimeout(() => router.push('/auth/login'), 2000)
+          return
+        }
+
+        if (!user) {
+          console.log('[v0] No user found, redirecting to login')
           router.push('/auth/login')
           return
         }
 
         setUser(user)
         const userType = user.user_metadata?.user_type
+
+        console.log('[v0] User authenticated:', user.email, 'Type:', userType)
 
         if (userType === 'filmmaker') {
           router.push('/filmmaker-dashboard')
@@ -67,9 +78,10 @@ export default function ProtectedPage() {
         } else {
           setShowRoleSelection(true)
         }
-      } catch (error) {
-        console.error('[v0] Error during redirect:', error)
-        router.push('/auth/login')
+      } catch (err) {
+        console.error('[v0] Error during redirect:', err)
+        setError('An unexpected error occurred. Redirecting to login...')
+        setTimeout(() => router.push('/auth/login'), 2000)
       } finally {
         setLoading(false)
       }
@@ -106,6 +118,30 @@ export default function ProtectedPage() {
       alert('Error setting role. Please try again.')
       setSettingRole(null)
     }
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background p-6">
+        <div className="w-full max-w-md text-center">
+          <div className="mb-4 flex justify-center">
+            <div className="rounded-full bg-red-500/20 p-4">
+              <svg className="h-8 w-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold text-foreground mb-4">Oops!</h1>
+          <p className="text-muted-foreground mb-6">{error}</p>
+          <button
+            onClick={() => router.push('/auth/login')}
+            className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 font-medium"
+          >
+            Back to Login
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (loading) {
