@@ -12,34 +12,57 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-export default function Page() {
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault()
     const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
       })
+      
       if (error) throw error
-      router.push('/protected')
+      setSuccess(true)
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (success) {
+    return (
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-sm">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">Check your email</CardTitle>
+              <CardDescription>
+                We've sent a password reset link to {email}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Click the link in the email to reset your password. If you don't see it, check your spam folder.
+              </p>
+              <Button asChild className="w-full">
+                <Link href="/auth/login">Back to Login</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -48,13 +71,13 @@ export default function Page() {
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Login</CardTitle>
+              <CardTitle className="text-2xl">Forgot Password</CardTitle>
               <CardDescription>
-                Enter your email below to login to your account
+                Enter your email and we'll send you a link to reset your password
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleLogin}>
+              <form onSubmit={handleForgotPassword}>
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
@@ -67,36 +90,18 @@ export default function Page() {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
-                  <div className="grid gap-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password">Password</Label>
-                      <Link
-                        href="/auth/forgot-password"
-                        className="text-sm text-primary hover:underline"
-                      >
-                        Forgot?
-                      </Link>
-                    </div>
-                    <Input
-                      id="password"
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
                   {error && <p className="text-sm text-red-500">{error}</p>}
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Logging in...' : 'Login'}
+                    {isLoading ? 'Sending...' : 'Send Reset Link'}
                   </Button>
                 </div>
                 <div className="mt-4 text-center text-sm">
-                  Don&apos;t have an account?{' '}
+                  Remember your password?{' '}
                   <Link
-                    href="/auth/sign-up"
+                    href="/auth/login"
                     className="underline underline-offset-4"
                   >
-                    Sign up
+                    Back to login
                   </Link>
                 </div>
               </form>

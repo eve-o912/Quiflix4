@@ -73,7 +73,7 @@ export async function PATCH(
       );
     }
 
-    // If approved, update user metadata with the role
+    // If approved, update user metadata with the role and create wallet
     if (status === 'approved') {
       const { error: updateUserError } = await supabase.auth.admin.updateUserById(
         application.user_id,
@@ -90,6 +90,35 @@ export async function PATCH(
         // Don't fail the response, just log it
       } else {
         console.log('[v0] User role set to:', application.application_type);
+      }
+
+      // Create wallet for filmmaker or distributor
+      try {
+        const walletResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/wallet/create`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: application.user_id,
+            user_type: application.application_type,
+            email: application.email,
+            first_name: application.first_name,
+            last_name: application.last_name,
+          }),
+        });
+
+        if (walletResponse.ok) {
+          const walletData = await walletResponse.json();
+          console.log('[v0] Wallet created for user:', {
+            user_id: application.user_id,
+            user_type: application.application_type,
+            wallet: walletData.data?.wallet_address,
+          });
+        } else {
+          console.error('[v0] Failed to create wallet:', await walletResponse.text());
+        }
+      } catch (walletError) {
+        console.error('[v0] Wallet creation error:', walletError);
+        // Don't fail the approval if wallet creation fails
       }
     }
 
