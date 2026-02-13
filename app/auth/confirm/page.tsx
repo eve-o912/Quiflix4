@@ -15,8 +15,16 @@ export default function ConfirmPage() {
       try {
         const supabase = createClient()
 
-        // Check if user has a session (email confirmed)
+        // Get the token from the URL (Supabase passes it as #access_token in the fragment)
+        // The Supabase client automatically handles token extraction
         const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+        console.log('[v0] Email confirmation check:', {
+          hasUser: !!user,
+          userEmail: user?.email,
+          emailConfirmed: user?.email_confirmed_at,
+          error: userError?.message,
+        })
 
         if (userError) {
           console.error('[v0] Email confirmation error:', userError.message)
@@ -25,22 +33,18 @@ export default function ConfirmPage() {
           return
         }
 
-        if (user && user.email_confirmed_at) {
-          console.log('[v0] Email confirmed successfully for:', user.email)
-          // Small delay to ensure session is established
-          setTimeout(() => {
-            router.push('/protected')
-          }, 500)
-        } else if (user) {
-          console.log('[v0] User authenticated but email not confirmed yet')
-          // User exists but email not confirmed, redirect to protected
-          setTimeout(() => {
-            router.push('/protected')
-          }, 500)
-        } else {
-          setError('No user found. Please sign up again.')
+        if (!user) {
+          console.log('[v0] No authenticated user found')
+          setError('No user found. The confirmation link may have expired.')
           setLoading(false)
+          return
         }
+
+        console.log('[v0] Email confirmed successfully for:', user.email)
+        // Redirect to protected route after email confirmation
+        setTimeout(() => {
+          router.push('/protected')
+        }, 1000)
       } catch (err) {
         console.error('[v0] Confirmation error:', err)
         setError('An error occurred during email confirmation')
@@ -48,8 +52,10 @@ export default function ConfirmPage() {
       }
     }
 
-    handleEmailConfirmation()
-  }, [router, searchParams])
+    // Add a small delay to ensure Supabase client is initialized
+    const timer = setTimeout(handleEmailConfirmation, 100)
+    return () => clearTimeout(timer)
+  }, [router])
 
   if (error) {
     return (
