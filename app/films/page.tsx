@@ -152,37 +152,39 @@ export default function FilmsPage() {
         {/* Films Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
           {filteredFilms.map((film, index) => (
-            <Card key={film.id} className="bg-card border-border overflow-hidden hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/20 group cursor-pointer animate-slideUp" style={{ animationDelay: `${0.1 * (index + 1)}s` }}>
-              <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
-                <img
-                  src={film.poster || "/placeholder.svg"}
-                  alt={film.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
-                  <Play className="h-12 w-12 text-primary/40 group-hover:text-primary/80 transition-colors animate-pulse" />
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="font-bold text-lg mb-2">{film.title}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{film.director}</p>
-                <div className="flex gap-2 mb-4 text-sm">
-                  <span className="text-muted-foreground">{film.location}</span>
-                  <span className="text-muted-foreground">•</span>
-                  <span className="text-muted-foreground">{film.genre}</span>
-                </div>
-                <div className="space-y-2 border-t border-border pt-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Sales:</span>
-                    <span className="text-primary font-semibold">{film.sales}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Earnings:</span>
-                    <span className="text-primary font-semibold">{film.earnings}</span>
+            <Link key={film.id} href={`/films/${film.id}`}>
+              <Card className="bg-card border-border overflow-hidden hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/20 group cursor-pointer animate-slideUp h-full" style={{ animationDelay: `${0.1 * (index + 1)}s` }}>
+                <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
+                  <img
+                    src={film.poster || "/placeholder.svg"}
+                    alt={film.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
+                    <Play className="h-12 w-12 text-primary/40 group-hover:text-primary/80 transition-colors animate-pulse" />
                   </div>
                 </div>
-              </div>
-            </Card>
+                <div className="p-6">
+                  <h3 className="font-bold text-lg mb-2">{film.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-4">{film.director}</p>
+                  <div className="flex gap-2 mb-4 text-sm">
+                    <span className="text-muted-foreground">{film.location}</span>
+                    <span className="text-muted-foreground">•</span>
+                    <span className="text-muted-foreground">{film.genre}</span>
+                  </div>
+                  <div className="space-y-2 border-t border-border pt-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Sales:</span>
+                      <span className="text-primary font-semibold">{film.sales}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Earnings:</span>
+                      <span className="text-primary font-semibold">{film.earnings}</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </Link>
           ))}
         </div>
 
