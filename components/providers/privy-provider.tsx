@@ -8,8 +8,13 @@ interface PrivyWrapperProps {
 }
 
 export function PrivyWrapper({ children }: PrivyWrapperProps) {
-  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || '';
-  
+  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+
+  // During static generation / build without env vars, skip Privy initialization
+  if (!privyAppId) {
+    return <>{children}</>;
+  }
+
   return (
     <PrivyProvider
       appId={privyAppId}
@@ -22,9 +27,7 @@ export function PrivyWrapper({ children }: PrivyWrapperProps) {
         embeddedWallets: {
           createOnLogin: 'users-without-wallets',
         },
-        // Customize the login flow to be seamless
         loginMethods: ['email', 'wallet', 'google', 'twitter', 'discord'],
-        // No wallet creation prompt - seamless experience
         showWalletLoginFirst: false,
       }}
     >
