@@ -1,4 +1,4 @@
-import { ethers, providers } from 'ethers';
+import { ethers } from 'ethers';
 import QuiflixDDTABI from '@/contracts/QuiflixDDT.json';
 
 // Contract configuration
@@ -126,7 +126,7 @@ export class QuiflixContract {
   ): Promise<string> {
     try {
       // Convert USD amount to stablecoin units (USDC/USDT have 6 decimals)
-      const amountInStablecoin = ethers.utils.parseUnits(saleAmount, 6);
+      const amountInStablecoin = ethers.parseUnits(saleAmount, 6);
       const tx = await this.contract.recordSaleAndDistributeRevenue(
         filmId,
         distributorId,
@@ -212,7 +212,7 @@ export class QuiflixContract {
     try {
       const revenue = await this.contract.getFilmRevenue(filmId);
       // Convert from stablecoin units (6 decimals) back to USD
-      return ethers.utils.formatUnits(revenue, 6);
+      return ethers.formatUnits(revenue, 6);
     } catch (error) {
       console.error('Failed to get film revenue:', error);
       throw error;
@@ -241,7 +241,7 @@ export async function createContractInstance(): Promise<QuiflixContract> {
     throw new Error('RPC URL not configured');
   }
 
-  const provider = new providers.JsonRpcProvider(RPC_URL);
+  const provider = new ethers.JsonRpcProvider(RPC_URL);
   
   // For server-side operations, use a private key from environment
   const privateKey = process.env.PRIVATE_KEY;
@@ -262,7 +262,7 @@ export function createReadOnlyContractInstance() {
     throw new Error('RPC URL not configured');
   }
 
-  const provider = new providers.JsonRpcProvider(RPC_URL);
+  const provider = new ethers.JsonRpcProvider(RPC_URL);
   const contract = new ethers.Contract(CONTRACT_ADDRESS, QuiflixDDTABI.abi, provider);
   
   return contract;
