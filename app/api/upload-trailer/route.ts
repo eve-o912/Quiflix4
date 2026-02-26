@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       access: 'public',
     });
 
-    console.log('[v0] Trailer uploaded:', {
+    console.log('[Quiflix] Trailer uploaded:', {
       filmId,
       fileName: file.name,
       fileSize: file.size,
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('[v0] Upload error:', error);
+    console.error('[Quiflix] Upload error:', error);
     return Response.json(
       { error: 'Failed to upload trailer' },
       { status: 500 }

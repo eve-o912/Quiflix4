@@ -5,8 +5,11 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import { useWallet } from '@/contexts/wallet-context';
+import { Film, Wallet, CheckCircle } from 'lucide-react';
 
 export default function FilmmakerApply() {
+  const { isAuthenticated, login, createEmbeddedWallet, setUserType } = useWallet();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -38,6 +41,17 @@ export default function FilmmakerApply() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    
+    // Ensure wallet is created and user type is set
+    if (isAuthenticated) {
+      try {
+        await createEmbeddedWallet();
+        setUserType('filmmaker');
+      } catch (error) {
+        console.error('Wallet setup failed:', error);
+      }
+    }
+    
     setLoading(true);
     setError('');
 
@@ -81,6 +95,26 @@ export default function FilmmakerApply() {
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <div className="p-8 text-center">
+            <Wallet className="h-16 w-16 text-primary mx-auto mb-4" />
+            <h2 className="text-2xl font-bold mb-4">Connect Your Wallet</h2>
+            <p className="text-muted-foreground mb-6">
+              To apply as a filmmaker, you need to connect your embedded wallet first. This allows us to create a secure blockchain identity for you.
+            </p>
+            <Button onClick={login} className="w-full">
+              <Wallet className="mr-2 h-4 w-4" />
+              Connect Wallet to Continue
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
@@ -114,9 +148,15 @@ export default function FilmmakerApply() {
 
         {success && (
           <Card className="bg-green-900/20 border-green-700 p-4 mb-6">
-            <p className="text-green-200">
-              ✓ Application submitted! We'll review your film and contact you at {formData.email}
-            </p>
+            <div className="flex items-center gap-3">
+              <CheckCircle className="h-5 w-5 text-green-400" />
+              <div>
+                <p className="text-green-200 font-medium">Application submitted!</p>
+                <p className="text-green-200 text-sm">
+                  We'll review your film and contact you at {formData.email}. Your embedded wallet has been created and linked to your account.
+                </p>
+              </div>
+            </div>
           </Card>
         )}
 

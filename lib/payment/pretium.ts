@@ -33,7 +33,7 @@ export async function createPretiumOrder(
   paymentMethod: 'mpesa' | 'credit_card' = 'mpesa'
 ): Promise<PretiumCreateOrderResponse> {
   try {
-    console.log('[v0] Creating Pretium order:', {
+    console.log('[Quiflix] Creating Pretium order:', {
       walletAddress,
       amountKes,
       stablecoin,
@@ -63,15 +63,15 @@ export async function createPretiumOrder(
 
     if (!response.ok) {
       const error = await response.json();
-      console.error('[v0] Pretium API error:', error);
+      console.error('[Quiflix] Pretium API error:', error);
       throw new Error(`Pretium order creation failed: ${error.message}`);
     }
 
     const data: PretiumCreateOrderResponse = await response.json();
-    console.log('[v0] Pretium order created:', data.order_id);
+    console.log('[Quiflix] Pretium order created:', data.order_id);
     return data;
   } catch (error) {
-    console.error('[v0] Error creating Pretium order:', error);
+    console.error('[Quiflix] Error creating Pretium order:', error);
     throw error;
   }
 }
@@ -102,10 +102,10 @@ export async function getExchangeRate(
     }
 
     const data: PretiumExchangeRateResponse = await response.json();
-    console.log('[v0] Exchange rate:', { pair: data.pair, rate: data.rate });
+    console.log('[Quiflix] Exchange rate:', { pair: data.pair, rate: data.rate });
     return data.rate;
   } catch (error) {
-    console.error('[v0] Error fetching exchange rate:', error);
+    console.error('[Quiflix] Error fetching exchange rate:', error);
     // Fallback to approximate rate if API fails
     return 0.0077; // Approximate KES to USD
   }
@@ -122,7 +122,7 @@ export async function calculateStablecoinAmount(
     const amountUsd = amountKes * rate;
     return amountUsd; // 1 USDC/USDT = 1 USD
   } catch (error) {
-    console.error('[v0] Error calculating stablecoin amount:', error);
+    console.error('[Quiflix] Error calculating stablecoin amount:', error);
     throw error;
   }
 }
@@ -149,7 +149,7 @@ export function verifyPretiumWebhook(
 
     return hash === signature;
   } catch (error) {
-    console.error('[v0] Error verifying Pretium webhook:', error);
+    console.error('[Quiflix] Error verifying Pretium webhook:', error);
     return false;
   }
 }
@@ -159,12 +159,12 @@ export function verifyPretiumWebhook(
  */
 export async function handlePretiumWebhook(payload: any) {
   try {
-    console.log('[v0] Processing Pretium webhook:', payload.order_id);
+    console.log('[Quiflix] Processing Pretium webhook:', payload.order_id);
 
     const { order_id, status, stablecoin_amount, wallet_address } = payload;
 
     if (status === 'completed') {
-      console.log('[v0] Payment completed:', {
+      console.log('[Quiflix] Payment completed:', {
         orderId: order_id,
         amount: stablecoin_amount,
       });
@@ -172,13 +172,13 @@ export async function handlePretiumWebhook(payload: any) {
       // Trigger smart contract transfer
       return { success: true, status: 'completed' };
     } else if (status === 'failed') {
-      console.error('[v0] Payment failed:', order_id);
+      console.error('[Quiflix] Payment failed:', order_id);
       return { success: false, status: 'failed' };
     }
 
     return { success: true, status };
   } catch (error) {
-    console.error('[v0] Error handling Pretium webhook:', error);
+    console.error('[Quiflix] Error handling Pretium webhook:', error);
     throw error;
   }
 }

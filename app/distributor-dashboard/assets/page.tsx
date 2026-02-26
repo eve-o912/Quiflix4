@@ -19,7 +19,7 @@ export default function DistributorAssets() {
         // For now, we'll show the structure
         setLoading(false);
       } catch (error) {
-        console.error('[v0] Error fetching assets:', error);
+        console.error('[Quiflix] Error fetching assets:', error);
         setLoading(false);
       }
     };
@@ -46,7 +46,7 @@ export default function DistributorAssets() {
       window.URL.revokeObjectURL(downloadUrl);
       document.body.removeChild(a);
     } catch (error) {
-      console.error('[v0] Download failed:', error);
+      console.error('[Quiflix] Download failed:', error);
     }
   };
 
@@ -162,7 +162,7 @@ export default function DistributorAssets() {
                           onClick={() => {
                             const message = `Check out this amazing film: Shadow of the Sun! Watch the trailer and get instant access. ${window.location.origin}/distributor/abc123/film1`;
                             // Would integrate with social sharing APIs
-                            console.log(`[v0] Share to ${platform}:`, message);
+                            console.log(`[Quiflix] Share to ${platform}:`, message);
                           }}
                         >
                           <Share2 className="h-3 w-3" />
@@ -250,7 +250,7 @@ export default function DistributorAssets() {
                           className="bg-transparent text-xs gap-1"
                           onClick={() => {
                             const message = `Check out this amazing film: Urban Hearts! Watch the trailer and get instant access. ${window.location.origin}/distributor/abc123/film2`;
-                            console.log(`[v0] Share to ${platform}:`, message);
+                            console.log(`[Quiflix] Share to ${platform}:`, message);
                           }}
                         >
                           <Share2 className="h-3 w-3" />

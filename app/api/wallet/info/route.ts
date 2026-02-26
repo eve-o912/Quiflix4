@@ -27,7 +27,7 @@ export async function GET() {
 
     return Response.json(wallet, { status: 200 });
   } catch (error) {
-    console.error('[v0] Error fetching wallet info:', error);
+    console.error('[Quiflix] Error fetching wallet info:', error);
     return Response.json(
       { error: 'Failed to fetch wallet' },
       { status: 500 }

@@ -32,7 +32,7 @@ export default function FilmmakerDashboard() {
 
   useEffect(() => {
     // In production, fetch from Supabase
-    console.log('[v0] Filmmaker dashboard loaded - connect to Supabase for data');
+    console.log('[Quiflix] Filmmaker dashboard loaded - connect to Supabase for data');
     setLoading(false);
   }, []);
 
@@ -52,13 +52,13 @@ export default function FilmmakerDashboard() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('[v0] Trailer uploaded:', data);
+        console.log('[Quiflix] Trailer uploaded:', data);
         setShowUploadModal(false);
         setTrailerFile(null);
         // Refresh films
       }
     } catch (error) {
-      console.error('[v0] Upload failed:', error);
+      console.error('[Quiflix] Upload failed:', error);
     } finally {
       setUploading(false);
     }

@@ -3,8 +3,26 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Film, Play, Zap, TrendingUp, Users, Globe } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { PremiumCard, PremiumStats } from '@/components/ui/premium-card';
+import { HeroSection } from '@/components/ui/hero-section';
+import { 
+  Film, 
+  Play, 
+  Zap, 
+  TrendingUp, 
+  Users, 
+  Globe,
+  Star,
+  Shield,
+  ArrowRight,
+  DollarSign,
+  PlayCircle,
+  Target,
+  Award
+} from 'lucide-react';
+import { AuthButton } from '@/components/auth/auth-button';
 
 export default function LandingPage() {
   return (
@@ -35,9 +53,7 @@ export default function LandingPage() {
             <Link href="/auth/login">
               <Button variant="ghost">Log In</Button>
             </Link>
-            <Link href="/auth/sign-up">
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">Sign Up</Button>
-            </Link>
+            <AuthButton />
           </div>
         </div>
       </nav>

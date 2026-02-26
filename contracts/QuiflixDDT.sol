@@ -18,7 +18,7 @@ contract QuiflixDDT is ERC1155, Ownable, Pausable {
     // Revenue split percentages (add up to 100)
     uint256 public constant FILMMAKER_PERCENTAGE = 70;
     uint256 public constant DISTRIBUTOR_PERCENTAGE = 20;
-    uint256 public constant GOODFLIX_PERCENTAGE = 10;
+    uint256 public constant QUIFLIX_PERCENTAGE = 10;
 
     // ==================== STATE VARIABLES ====================
     
@@ -89,8 +89,8 @@ contract QuiflixDDT is ERC1155, Ownable, Pausable {
     /// @dev Sales history for tracking
     Sale[] public salesHistory;
     
-    /// @dev Goodflix wallet address for receiving platform fees
-    address public goodflixWallet;
+    /// @dev Quiflix wallet address for receiving platform fees
+    address public quiflixWallet;
 
     // ==================== EVENTS ====================
     
@@ -99,7 +99,7 @@ contract QuiflixDDT is ERC1155, Ownable, Pausable {
     event DistributorRegistered(uint256 indexed distributorId, address wallet, string companyName);
     event DDTAssigned(uint256 indexed filmId, uint256 indexed distributorId, uint256 amount);
     event SaleRecorded(uint256 indexed filmId, uint256 indexed distributorId, uint256 saleAmount);
-    event RevenuePaid(uint256 indexed filmId, uint256 indexed distributorId, uint256 filmakerAmount, uint256 distributorAmount, uint256 goodflixAmount);
+    event RevenuePaid(uint256 indexed filmId, uint256 indexed distributorId, uint256 filmakerAmount, uint256 distributorAmount, uint256 quiflixAmount);
 
     // ==================== MODIFIERS ====================
     
@@ -120,8 +120,8 @@ contract QuiflixDDT is ERC1155, Ownable, Pausable {
 
     // ==================== CONSTRUCTOR ====================
     
-    constructor(address _goodflixWallet) ERC1155("ipfs://QmQuiflix/{id}.json") {
-        goodflixWallet = _goodflixWallet;
+    constructor(address _quiflixWallet) ERC1155("ipfs://QmQuiflix/{id}.json") {
+        quiflixWallet = _quiflixWallet;
     }
 
     // ==================== FILM MANAGEMENT ====================
@@ -260,7 +260,7 @@ contract QuiflixDDT is ERC1155, Ownable, Pausable {
         // Calculate splits
         uint256 filemakerEarnings = (_saleAmount * FILMMAKER_PERCENTAGE) / 100;
         uint256 distributorEarnings = (_saleAmount * DISTRIBUTOR_PERCENTAGE) / 100;
-        uint256 goodflixEarnings = (_saleAmount * GOODFLIX_PERCENTAGE) / 100;
+        uint256 quiflixEarnings = (_saleAmount * QUIFLIX_PERCENTAGE) / 100;
         
         // Update balances
         films[_filmId].totalSalesValue += _saleAmount;
@@ -271,7 +271,7 @@ contract QuiflixDDT is ERC1155, Ownable, Pausable {
         distributors[_distributorId].totalEarnings += distributorEarnings;
         
         emit SaleRecorded(_filmId, _distributorId, _saleAmount);
-        emit RevenuePaid(_filmId, _distributorId, filemakerEarnings, distributorEarnings, goodflixEarnings);
+        emit RevenuePaid(_filmId, _distributorId, filemakerEarnings, distributorEarnings, quiflixEarnings);
         
         // Note: Actual ETH transfers would be handled by payment router contract
         // This contract tracks entitlements; payment processing is separate
@@ -351,11 +351,11 @@ contract QuiflixDDT is ERC1155, Ownable, Pausable {
     // ==================== ADMIN FUNCTIONS ====================
     
     /**
-     * @notice Update Goodflix wallet address
+     * @notice Update Quiflix wallet address
      */
-    function setGoodflixWallet(address _newWallet) external onlyOwner {
+    function setQuiflixWallet(address _newWallet) external onlyOwner {
         require(_newWallet != address(0), "Invalid address");
-        goodflixWallet = _newWallet;
+        quiflixWallet = _newWallet;
     }
 
     /**

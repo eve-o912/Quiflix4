@@ -23,7 +23,7 @@ export async function GET() {
       .limit(50);
 
     if (error) {
-      console.error('[v0] Error fetching transactions:', error);
+      console.error('[Quiflix] Error fetching transactions:', error);
       return Response.json(
         { error: 'Failed to fetch transactions' },
         { status: 500 }
@@ -32,7 +32,7 @@ export async function GET() {
 
     return Response.json({ transactions }, { status: 200 });
   } catch (error) {
-    console.error('[v0] Error in transactions API:', error);
+    console.error('[Quiflix] Error in transactions API:', error);
     return Response.json(
       { error: 'Internal server error' },
       { status: 500 }

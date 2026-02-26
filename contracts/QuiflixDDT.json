@@ -1,0 +1,197 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {"internalType": "string", "name": "_title", "type": "string"},
+        {"internalType": "address", "name": "_filmmaker", "type": "address"},
+        {"internalType": "string", "name": "_filmHash", "type": "string"}
+      ],
+      "name": "registerFilm",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "uint256", "name": "_filmId", "type": "uint256"}],
+      "name": "approveFilmAndMintDDTs",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {"internalType": "address", "name": "_walletAddress", "type": "address"},
+        {"internalType": "string", "name": "_companyName", "type": "string"}
+      ],
+      "name": "registerDistributor",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {"internalType": "uint256", "name": "_filmId", "type": "uint256"},
+        {"internalType": "uint256", "name": "_distributorId", "type": "uint256"}
+      ],
+      "name": "assignDDTToDistributor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {"internalType": "uint256", "name": "_filmId", "type": "uint256"},
+        {"internalType": "uint256", "name": "_distributorId", "type": "uint256"},
+        {"internalType": "uint256", "name": "_saleAmount", "type": "uint256"}
+      ],
+      "name": "recordSaleAndDistributeRevenue",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "uint256", "name": "_filmId", "type": "uint256"}],
+      "name": "getFilm",
+      "outputs": [
+        {
+          "components": [
+            {"internalType": "uint256", "name": "filmId", "type": "uint256"},
+            {"internalType": "string", "name": "title", "type": "string"},
+            {"internalType": "address", "name": "filmmaker", "type": "address"},
+            {"internalType": "string", "name": "filmHash", "type": "string"},
+            {"internalType": "uint256", "name": "createdAt", "type": "uint256"},
+            {"internalType": "bool", "name": "approved", "type": "bool"},
+            {"internalType": "uint256", "name": "totalSalesValue", "type": "uint256"}
+          ],
+          "internalType": "struct QuiflixDDT.Film",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "uint256", "name": "_distributorId", "type": "uint256"}],
+      "name": "getDistributor",
+      "outputs": [
+        {
+          "components": [
+            {"internalType": "uint256", "name": "distributorId", "type": "uint256"},
+            {"internalType": "address", "name": "walletAddress", "type": "address"},
+            {"internalType": "string", "name": "companyName", "type": "string"},
+            {"internalType": "uint256[]", "name": "heldFilmIds", "type": "uint256[]"},
+            {"internalType": "uint256", "name": "totalEarnings", "type": "uint256"},
+            {"internalType": "uint256", "name": "joinedAt", "type": "uint256"}
+          ],
+          "internalType": "struct QuiflixDDT.Distributor",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "address", "name": "_walletAddress", "type": "address"}],
+      "name": "getDistributorByAddress",
+      "outputs": [
+        {
+          "components": [
+            {"internalType": "uint256", "name": "distributorId", "type": "uint256"},
+            {"internalType": "address", "name": "walletAddress", "type": "address"},
+            {"internalType": "string", "name": "companyName", "type": "string"},
+            {"internalType": "uint256[]", "name": "heldFilmIds", "type": "uint256[]"},
+            {"internalType": "uint256", "name": "totalEarnings", "type": "uint256"},
+            {"internalType": "uint256", "name": "joinedAt", "type": "uint256"}
+          ],
+          "internalType": "struct QuiflixDDT.Distributor",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {"internalType": "uint256", "name": "_distributorId", "type": "uint256"},
+        {"internalType": "uint256", "name": "_filmId", "type": "uint256"}
+      ],
+      "name": "getDistributorHoldings",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "uint256", "name": "_distributorId", "type": "uint256"}],
+      "name": "getDistributorFilms",
+      "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "uint256", "name": "_filmId", "type": "uint256"}],
+      "name": "getFilmRevenue",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getFilmsCount",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {"indexed": true, "internalType": "uint256", "name": "filmId", "type": "uint256"},
+        {"indexed": false, "internalType": "string", "name": "title", "type": "string"},
+        {"indexed": true, "internalType": "address", "name": "filmmaker", "type": "address"}
+      ],
+      "name": "FilmRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {"indexed": true, "internalType": "uint256", "name": "filmId", "type": "uint256"},
+        {"indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256"}
+      ],
+      "name": "FilmApproved",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {"indexed": true, "internalType": "uint256", "name": "distributorId", "type": "uint256"},
+        {"indexed": true, "internalType": "address", "name": "walletAddress", "type": "address"},
+        {"indexed": false, "internalType": "string", "name": "companyName", "type": "string"}
+      ],
+      "name": "DistributorRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {"indexed": true, "internalType": "uint256", "name": "filmId", "type": "uint256"},
+        {"indexed": true, "internalType": "uint256", "name": "distributorId", "type": "uint256"},
+        {"indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256"}
+      ],
+      "name": "DDTAssigned",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {"indexed": true, "internalType": "uint256", "name": "filmId", "type": "uint256"},
+        {"indexed": true, "internalType": "uint256", "name": "distributorId", "type": "uint256"},
+        {"indexed": false, "internalType": "uint256", "name": "saleAmount", "type": "uint256"}
+      ],
+      "name": "SaleRecorded",
+      "type": "event"
+    }
+  ]
+}

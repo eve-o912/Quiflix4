@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       contractAddress,
     } = body;
 
-    console.log('[v0] Recording sale:', {
+    console.log('[Quiflix] Recording sale:', {
       filmId,
       distributorId,
       saleAmount,
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       .single();
 
     if (saleError) {
-      console.error('[v0] Error recording sale:', saleError);
+      console.error('[Quiflix] Error recording sale:', saleError);
       return Response.json(
         { error: 'Failed to record sale' },
         { status: 500 }
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
       });
 
     if (payoutError) {
-      console.error('[v0] Error creating payout record:', payoutError);
+      console.error('[Quiflix] Error creating payout record:', payoutError);
     }
 
     // 4. Update DDT holding with sales attribution
@@ -103,7 +103,7 @@ export async function POST(req: Request) {
         .eq('id', holdingId);
 
       if (holdingUpdateError) {
-        console.error('[v0] Error updating holding:', holdingUpdateError);
+        console.error('[Quiflix] Error updating holding:', holdingUpdateError);
       }
     }
 
@@ -119,7 +119,7 @@ export async function POST(req: Request) {
       .eq('id', filmId);
 
     if (filmUpdateError) {
-      console.error('[v0] Error updating film sales:', filmUpdateError);
+      console.error('[Quiflix] Error updating film sales:', filmUpdateError);
     }
 
     // 6. Record on-chain transaction
@@ -132,7 +132,7 @@ export async function POST(req: Request) {
         saleAmountInWei
       );
 
-      console.log('[v0] Sale recorded on-chain:', { txHash });
+      console.log('[Quiflix] Sale recorded on-chain:', { txHash });
 
       // Update sale record with transaction hash
       await supabase
@@ -149,7 +149,7 @@ export async function POST(req: Request) {
         transaction_hash: txHash,
       });
     } catch (blockchainError) {
-      console.error('[v0] Blockchain transaction failed:', blockchainError);
+      console.error('[Quiflix] Blockchain transaction failed:', blockchainError);
       // Sale is recorded in DB even if blockchain fails; retry logic can handle
     }
 
@@ -167,7 +167,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('[v0] API error:', error);
+    console.error('[Quiflix] API error:', error);
     return Response.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -203,7 +203,7 @@ export async function GET(req: Request) {
 
     return Response.json({ data }, { status: 200 });
   } catch (error) {
-    console.error('[v0] API error:', error);
+    console.error('[Quiflix] API error:', error);
     return Response.json(
       { error: 'Internal server error' },
       { status: 500 }

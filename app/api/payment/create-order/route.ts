@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       referralCode,
     } = await req.json();
 
-    console.log('[v0] Creating payment order:', {
+    console.log('[Quiflix] Creating payment order:', {
       filmId,
       amountKes,
       stablecoin,
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       paymentMethod as any
     );
 
-    console.log('[v0] Pretium order created:', pretiumOrder.order_id);
+    console.log('[Quiflix] Pretium order created:', pretiumOrder.order_id);
 
     // Store transaction record in database
     const supabase = await createClient();
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       .single();
 
     if (txError) {
-      console.error('[v0] Error creating transaction record:', txError);
+      console.error('[Quiflix] Error creating transaction record:', txError);
     }
 
     return Response.json(
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('[v0] Error creating order:', error);
+    console.error('[Quiflix] Error creating order:', error);
     return Response.json(
       { error: 'Failed to create order' },
       { status: 500 }

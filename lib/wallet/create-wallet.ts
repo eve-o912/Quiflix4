@@ -11,7 +11,7 @@ export async function createWalletForUser(
   userType: 'filmmaker' | 'distributor' | 'platform'
 ) {
   try {
-    console.log('[v0] Creating wallet for:', { userId, userType });
+    console.log('[Quiflix] Creating wallet for:', { userId, userType });
 
     // Generate new private key
     const privateKey = generatePrivateKey();
@@ -20,7 +20,7 @@ export async function createWalletForUser(
     const account = privateKeyToAccount(privateKey);
     const walletAddress = account.address;
 
-    console.log('[v0] Generated wallet address:', walletAddress);
+    console.log('[Quiflix] Generated wallet address:', walletAddress);
 
     // Encrypt private key before storing
     const encryptedKey = encryptPrivateKey(privateKey);
@@ -41,18 +41,18 @@ export async function createWalletForUser(
       .single();
 
     if (error) {
-      console.error('[v0] Error creating wallet:', error);
+      console.error('[Quiflix] Error creating wallet:', error);
       throw new Error(`Failed to create wallet: ${error.message}`);
     }
 
-    console.log('[v0] Wallet created successfully');
+    console.log('[Quiflix] Wallet created successfully');
     return {
       walletAddress,
       userId,
       userType,
     };
   } catch (error) {
-    console.error('[v0] Error in createWalletForUser:', error);
+    console.error('[Quiflix] Error in createWalletForUser:', error);
     throw error;
   }
 }
@@ -70,13 +70,13 @@ export async function getWalletForUser(userId: string) {
       .single();
 
     if (error) {
-      console.error('[v0] Error fetching wallet:', error);
+      console.error('[Quiflix] Error fetching wallet:', error);
       return null;
     }
 
     return data;
   } catch (error) {
-    console.error('[v0] Error in getWalletForUser:', error);
+    console.error('[Quiflix] Error in getWalletForUser:', error);
     return null;
   }
 }
