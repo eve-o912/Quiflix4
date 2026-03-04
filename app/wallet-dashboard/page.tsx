@@ -44,7 +44,7 @@ export default function WalletDashboard() {
           setTransactions(txData.transactions || []);
         }
       } catch (error) {
-        console.error('[v0] Error fetching wallet data:', error);
+        console.error('[Quiflix] Error fetching wallet data:', error);
       } finally {
         setLoading(false);
       }

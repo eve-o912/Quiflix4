@@ -190,3 +190,21 @@ Future enhancements:
 - Ensure distributor is logged in
 - Check user permissions in dashboard
 - Verify films are assigned to distributor
+-- Create the table
+create table notes (
+  id bigint primary key generated always as identity,
+  title text not null
+);
+
+-- Insert some sample data into the table
+insert into notes (title)
+values
+  ('Today I created a Supabase project.'),
+  ('I added some data and queried it from Next.js.'),
+  ('It was awesome!');
+
+alter table notes enable row level security;
+create policy "public can read notes"
+on public.notes
+for select to anon
+using (true);

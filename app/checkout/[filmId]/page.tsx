@@ -31,7 +31,7 @@ export default function CheckoutPage() {
           setAmountKes(Math.ceil((data.price_usd || 9.99) / exchangeRate));
         }
       } catch (error) {
-        console.error('[v0] Error fetching film:', error);
+        console.error('[Quiflix] Error fetching film:', error);
       } finally {
         setLoading(false);
       }
@@ -48,7 +48,7 @@ export default function CheckoutPage() {
           }
         }
       } catch (error) {
-        console.error('[v0] Error fetching exchange rate:', error);
+        console.error('[Quiflix] Error fetching exchange rate:', error);
       }
     };
 
@@ -64,7 +64,7 @@ export default function CheckoutPage() {
   const handleCheckout = async () => {
     setProcessing(true);
     try {
-      console.log('[v0] Initiating checkout:', {
+      console.log('[Quiflix] Initiating checkout:', {
         filmId,
         amountKes,
         stablecoin,
@@ -86,7 +86,7 @@ export default function CheckoutPage() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('[v0] Checkout created:', data.order_id);
+        console.log('[Quiflix] Checkout created:', data.order_id);
         
         // Redirect to Pretium payment page
         if (data.payment_url) {
@@ -94,10 +94,10 @@ export default function CheckoutPage() {
         }
       } else {
         const error = await response.json();
-        console.error('[v0] Checkout error:', error);
+        console.error('[Quiflix] Checkout error:', error);
       }
     } catch (error) {
-      console.error('[v0] Error during checkout:', error);
+      console.error('[Quiflix] Error during checkout:', error);
     } finally {
       setProcessing(false);
     }

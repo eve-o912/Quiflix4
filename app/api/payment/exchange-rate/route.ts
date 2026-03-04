@@ -9,7 +9,7 @@ export async function GET() {
       { status: 200 }
     );
   } catch (error) {
-    console.error('[v0] Error fetching exchange rate:', error);
+    console.error('[Quiflix] Error fetching exchange rate:', error);
     // Return fallback rate
     return Response.json(
       { rate: 0.0077, timestamp: new Date().toISOString() },

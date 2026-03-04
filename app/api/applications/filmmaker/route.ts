@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     // Send email to Quiflix@proton.me with application details
     try {
-      console.log('[v0] Filmmaker application submitted:', {
+      console.log('[Quiflix] Filmmaker application submitted:', {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         filmTitle: formData.filmTitle,

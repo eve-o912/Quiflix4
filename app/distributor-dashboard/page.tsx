@@ -6,7 +6,8 @@ import { Card } from '@/components/ui/card';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Copy, ExternalLink, TrendingUp, DollarSign, Film, LogOut } from 'lucide-react';
+import { Copy, ExternalLink, TrendingUp, DollarSign, Film, LogOut, Wallet, LayoutDashboard, User } from 'lucide-react';
+import { useWallet } from '@/contexts/wallet-context';
 
 interface DDTHolding {
   id: string;
@@ -25,6 +26,7 @@ export default function DistributorDashboard() {
   const [totalSales, setTotalSales] = useState(0);
   const [loading, setLoading] = useState(true);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
+  const { logout, user: walletUser, isAuthenticated } = useWallet();
 
   useEffect(() => {
     checkAuth();
@@ -37,8 +39,8 @@ export default function DistributorDashboard() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      // Redirect to login
-      window.location.href = '/auth/login';
+      // Allow access even without Supabase auth - Privy handles auth
+      setLoading(false);
       return;
     }
 
@@ -108,8 +110,7 @@ export default function DistributorDashboard() {
   };
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await logout();
     window.location.href = '/';
   };
 
@@ -136,14 +137,29 @@ export default function DistributorDashboard() {
             />
             <span className="text-xl font-bold">Distributor Portal</span>
           </Link>
-          <Button
-            onClick={handleLogout}
-            variant="ghost"
-            className="gap-2"
-          >
-            <LogOut className="h-4 w-4" />
-            Logout
-          </Button>
+          <nav className="flex items-center gap-4">
+            <Link href="/dashboard" className="text-sm hover:text-primary flex items-center gap-1">
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Link>
+            <Link href="/filmmaker-dashboard" className="text-sm hover:text-primary flex items-center gap-1">
+              <Film className="h-4 w-4" />
+              Filmmaker
+            </Link>
+            <Link href="/wallet-dashboard" className="text-sm hover:text-primary flex items-center gap-1">
+              <Wallet className="h-4 w-4" />
+              Wallet
+            </Link>
+            <Button
+              onClick={handleLogout}
+              variant="ghost"
+              size="sm"
+              className="gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </Button>
+          </nav>
         </div>
       </header>
 
@@ -282,6 +298,54 @@ export default function DistributorDashboard() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link href="/dashboard">
+              <Card className="bg-card border-border p-4 hover:border-primary/50 transition-all cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Film className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Browse Films</h3>
+                    <p className="text-sm text-muted-foreground">Find new films to distribute</p>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+
+            <Link href="/wallet-dashboard">
+              <Card className="bg-card border-border p-4 hover:border-primary/50 transition-all cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-500/10 rounded-lg">
+                    <DollarSign className="h-5 w-5 text-green-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Withdraw Earnings</h3>
+                    <p className="text-sm text-muted-foreground">Access your wallet & funds</p>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+
+            <Link href="/filmmaker-dashboard">
+              <Card className="bg-card border-border p-4 hover:border-primary/50 transition-all cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <User className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Filmmaker Portal</h3>
+                    <p className="text-sm text-muted-foreground">Submit your own films</p>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+          </div>
         </div>
 
         {/* Info Section */}

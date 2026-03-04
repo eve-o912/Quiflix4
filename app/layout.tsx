@@ -1,10 +1,22 @@
 import React from "react"
 import type { Metadata } from 'next'
-import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
-import { ClientProviders } from '@/components/providers/client-providers'
+import localFont from "next/font/local"
+import { PrivyWrapper } from '@/components/providers/privy-provider'
 import { WalletProvider } from '@/contexts/wallet-context'
+import { BlockchainProvider } from '@/contexts/blockchain-context'
 import './globals.css'
+
+const geistSans = localFont({
+  src: "../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+
+const geistMono = localFont({
+  src: "../node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.woff2",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
 
 export const metadata: Metadata = {
   title: 'Quiflix - Film Distribution Platform',
@@ -13,19 +25,16 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
+        url: '/quiflix-logo.png',
+        type: 'image/png',
       },
       {
         url: '/icon.svg',
         type: 'image/svg+xml',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: '/quiflix-logo.png',
+    shortcut: '/quiflix-logo.png',
   },
 }
 
@@ -36,12 +45,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
-        <ClientProviders>
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+        <PrivyWrapper>
           <WalletProvider>
-            {children}
+            <BlockchainProvider>
+              {children}
+            </BlockchainProvider>
           </WalletProvider>
-        </ClientProviders>
+        </PrivyWrapper>
       </body>
     </html>
   )

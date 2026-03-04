@@ -60,7 +60,7 @@ export default function DistributorFilmPage() {
           setHolding(holdingData.data);
         }
       } catch (error) {
-        console.error('[v0] Error fetching data:', error);
+        console.error('[Quiflix] Error fetching data:', error);
       } finally {
         setLoading(false);
       }
@@ -86,7 +86,7 @@ export default function DistributorFilmPage() {
           url: holding.personalized_link,
         });
       } catch (error) {
-        console.error('[v0] Share failed:', error);
+        console.error('[Quiflix] Share failed:', error);
       }
     }
   };

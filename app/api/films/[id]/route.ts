@@ -22,7 +22,7 @@ export async function GET(
 
     return Response.json({ data }, { status: 200 });
   } catch (error) {
-    console.error('[v0] Error fetching film:', error);
+    console.error('[Quiflix] Error fetching film:', error);
     return Response.json(
       { error: 'Internal server error' },
       { status: 500 }

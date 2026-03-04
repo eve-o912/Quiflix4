@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       contractAddress
     } = body;
 
-    console.log('[v0] DDT Assignment - Approving distributor:', {
+    console.log('[Quiflix] DDT Assignment - Approving distributor:', {
       distributorId,
       filmId,
       distributorEmail,
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       .eq('id', distributorId);
 
     if (updateError) {
-      console.error('[v0] Error updating distributor:', updateError);
+      console.error('[Quiflix] Error updating distributor:', updateError);
       return Response.json(
         { error: 'Failed to update distributor status' },
         { status: 500 }
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
         parseInt(distributorId)
       );
 
-      console.log('[v0] DDT Assigned on-chain:', { txHash, distributorId, filmId });
+      console.log('[Quiflix] DDT Assigned on-chain:', { txHash, distributorId, filmId });
 
       // 3. Generate personalized distribution link with unique referral code
       const referralCode = generateReferralCode();
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
         .single();
 
       if (holdingError) {
-        console.error('[v0] Error creating DDT holding:', holdingError);
+        console.error('[Quiflix] Error creating DDT holding:', holdingError);
       }
 
       // 5. Fetch film details including trailer
@@ -94,7 +94,7 @@ export async function POST(req: Request) {
         .single();
 
       if (filmError) {
-        console.error('[v0] Error fetching film data:', filmError);
+        console.error('[Quiflix] Error fetching film data:', filmError);
       }
 
       // 6. Send approval email with personalized link and trailer
@@ -114,11 +114,11 @@ export async function POST(req: Request) {
           }),
         });
       } catch (emailError) {
-        console.error('[v0] Email sending failed:', emailError);
+        console.error('[Quiflix] Email sending failed:', emailError);
       }
 
-      console.log('[v0] Approval email sent to:', distributorEmail);
-      console.log('[v0] Personalized link:', personalizedLink);
+      console.log('[Quiflix] Approval email sent to:', distributorEmail);
+      console.log('[Quiflix] Personalized link:', personalizedLink);
 
       return Response.json(
         {
@@ -134,7 +134,7 @@ export async function POST(req: Request) {
         { status: 200 }
       );
     } catch (blockchainError) {
-      console.error('[v0] Blockchain error:', blockchainError);
+      console.error('[Quiflix] Blockchain error:', blockchainError);
       // Even if blockchain fails, we've updated the database
       return Response.json(
         {
@@ -146,7 +146,7 @@ export async function POST(req: Request) {
       );
     }
   } catch (error) {
-    console.error('[v0] API error:', error);
+    console.error('[Quiflix] API error:', error);
     return Response.json(
       { error: 'Internal server error' },
       { status: 500 }

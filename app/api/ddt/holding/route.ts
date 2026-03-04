@@ -40,7 +40,7 @@ export async function GET(request: Request) {
 
     return Response.json({ data }, { status: 200 });
   } catch (error) {
-    console.error('[v0] Error fetching DDT holding:', error);
+    console.error('[Quiflix] Error fetching DDT holding:', error);
     return Response.json(
       { error: 'Internal server error' },
       { status: 500 }

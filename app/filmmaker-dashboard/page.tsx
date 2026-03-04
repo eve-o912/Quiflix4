@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Upload, Play, Download, Edit2, Trash2, Plus, LogOut } from 'lucide-react';
+import { Upload, Play, Download, Edit2, Trash2, Plus, LogOut, Wallet, LayoutDashboard, Users, Film } from 'lucide-react';
 import Link from 'next/link';
+import { useWallet } from '@/contexts/wallet-context';
 
 interface Film {
   id: string;
@@ -29,6 +30,7 @@ export default function FilmmakerDashboard() {
   const [selectedFilm, setSelectedFilm] = useState<Film | null>(null);
   const [trailerFile, setTrailerFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const { logout, user } = useWallet();
 
   useEffect(() => {
     // In production, fetch from Supabase
@@ -64,6 +66,11 @@ export default function FilmmakerDashboard() {
     }
   };
 
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = '/';
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
@@ -85,16 +92,22 @@ export default function FilmmakerDashboard() {
               height={40}
               className="h-10 w-auto"
             />
-            <span className="text-xl font-bold">Quiflix</span>
+            <span className="text-xl font-bold">Filmmaker Portal</span>
           </Link>
           <nav className="flex items-center gap-6">
-            <a href="#earnings" className="text-sm hover:text-primary">
-              Earnings
-            </a>
-            <a href="#analytics" className="text-sm hover:text-primary">
-              Analytics
-            </a>
-            <Button variant="ghost" size="sm" className="gap-2">
+            <Link href="/dashboard" className="text-sm hover:text-primary flex items-center gap-1">
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Link>
+            <Link href="/distributor-dashboard" className="text-sm hover:text-primary flex items-center gap-1">
+              <Users className="h-4 w-4" />
+              Distributor
+            </Link>
+            <Link href="/wallet-dashboard" className="text-sm hover:text-primary flex items-center gap-1">
+              <Wallet className="h-4 w-4" />
+              Wallet
+            </Link>
+            <Button variant="ghost" size="sm" className="gap-2" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />
               Logout
             </Button>
@@ -119,7 +132,7 @@ export default function FilmmakerDashboard() {
               <p className="text-muted-foreground mb-6">
                 Your approved films will appear here
               </p>
-              <Link href="/apply/filmmaker">
+              <Link href="/dashboard">
                 <Button className="gap-2">
                   <Plus className="h-4 w-4" />
                   Apply with a Film

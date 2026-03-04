@@ -20,11 +20,15 @@ import {
   DollarSign,
   PlayCircle,
   Target,
-  Award
+  Award,
+  Wallet
 } from 'lucide-react';
 import { AuthButton } from '@/components/auth/auth-button';
+import { useWallet } from '@/contexts/wallet-context';
 
 export default function LandingPage() {
+  const { isAuthenticated, user } = useWallet();
+
   return (
     <div className="dark min-h-screen bg-background text-foreground">
       {/* Navigation */}
@@ -41,17 +45,14 @@ export default function LandingPage() {
             <span className="text-2xl font-bold">Quiflix</span>
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/films" className="text-sm hover:text-primary">
+            <Link href="/dashboard" className="text-sm hover:text-primary">
               Browse Films
             </Link>
-            <Link href="/apply/filmmaker" className="text-sm hover:text-primary">
+            <Link href="/filmmaker-dashboard" className="text-sm hover:text-primary">
               For Filmmakers
             </Link>
-            <Link href="/apply/distributor" className="text-sm hover:text-primary">
+            <Link href="/distributor-dashboard" className="text-sm hover:text-primary">
               For Distributors
-            </Link>
-            <Link href="/auth/login">
-              <Button variant="ghost">Log In</Button>
             </Link>
             <AuthButton />
           </div>
@@ -66,7 +67,6 @@ export default function LandingPage() {
           <div className="mx-auto max-w-7xl px-6 py-24 relative z-10 flex flex-col items-center text-center">
             <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full border border-border bg-card animate-slideDown">
               <Zap className="h-4 w-4 text-primary animate-pulse-glow" />
-              <span className="text-sm">Film marketing reimagined</span>
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight leading-tight animate-slideUp">
@@ -80,13 +80,15 @@ export default function LandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 animate-slideUp" style={{ animationDelay: '0.3s' }}>
-              <Link href="/films">
+              <Link href="/dashboard">
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 transition-all hover:shadow-lg hover:shadow-primary/50">
+                  <Film className="h-5 w-5 mr-2" />
                   Browse Films
                 </Button>
               </Link>
-              <Link href="/auth/sign-up">
+              <Link href="/dashboard">
                 <Button size="lg" variant="outline" className="bg-transparent px-8 border-border hover:bg-card transition-all">
+                  <Wallet className="h-5 w-5 mr-2" />
                   Get Started Free
                 </Button>
               </Link>
@@ -169,13 +171,15 @@ export default function LandingPage() {
               Join hundreds of filmmakers and distributors already using Quiflix.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/apply/filmmaker">
+              <Link href="/dashboard">
                 <Button size="lg" className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 px-8">
+                  <Film className="h-5 w-5 mr-2" />
                   Apply as Filmmaker
                 </Button>
               </Link>
-              <Link href="/apply/distributor">
+              <Link href="/dashboard">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto bg-transparent px-8">
+                  <Users className="h-5 w-5 mr-2" />
                   Apply as Distributor
                 </Button>
               </Link>

@@ -78,13 +78,13 @@ export default function AdminApplications() {
       // If filmmaker, also approve on smart contract
       if (type === 'filmmaker') {
         // Register film on chain
-        console.log('[v0] Filmmaker approved - would register on smart contract');
+        console.log('[Quiflix] Filmmaker approved - would register on smart contract');
         // In production, would call contract to register film and mint 500 DDTs
       }
 
       // If distributor, assign DDT to selected film
       if (type === 'distributor' && selectedFilmForDDT) {
-        console.log('[v0] Assigning DDT to distributor for film:', selectedFilmForDDT);
+        console.log('[Quiflix] Assigning DDT to distributor for film:', selectedFilmForDDT);
 
         // Call API to assign DDT
         const response = await fetch('/api/admin/approve-and-mint-ddt', {
