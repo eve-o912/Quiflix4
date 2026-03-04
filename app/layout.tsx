@@ -21,7 +21,6 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: 'Quiflix - Film Distribution Platform',
   description: 'Distribute your films globally. Connect with filmmakers, manage campaigns, and track earnings in one platform.',
-  generator: 'Quiflix',
   icons: {
     icon: [
       {
